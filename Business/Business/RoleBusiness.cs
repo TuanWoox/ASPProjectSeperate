@@ -1,4 +1,5 @@
-﻿using Common.Interfaces;
+﻿using Common.DbEntities.Identities;
+using Common.Interfaces;
 using Common.Utils.Enums;
 using Microsoft.AspNetCore.Identity;
 using System;
@@ -8,8 +9,8 @@ namespace Business.Business
 {
     public class RoleBusiness: IRoleBusiness
     {
-        RoleManager<IdentityRole> _roleManager;
-        public RoleBusiness(RoleManager<IdentityRole> roleManager)
+        RoleManager<ApplicationRole> _roleManager;
+        public RoleBusiness(RoleManager<ApplicationRole> roleManager)
         {
             _roleManager = roleManager;
         }
@@ -21,7 +22,7 @@ namespace Business.Business
                 var isRoleCreated = await _roleManager.RoleExistsAsync(defaultRole);
                 if (!isRoleCreated)
                 {
-                    await _roleManager.CreateAsync(new IdentityRole { Name = defaultRole });
+                    await _roleManager.CreateAsync(new ApplicationRole { Name = defaultRole, DisplayName = defaultRole });
                 }
             }
         }

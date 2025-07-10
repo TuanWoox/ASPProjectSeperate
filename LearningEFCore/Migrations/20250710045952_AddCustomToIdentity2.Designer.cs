@@ -3,14 +3,16 @@ using System;
 using Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace LearningEFCore.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20250710045952_AddCustomToIdentity2")]
+    partial class AddCustomToIdentity2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -131,14 +133,9 @@ namespace LearningEFCore.Migrations
                         .IsRequired()
                         .HasColumnType("varchar(255)");
 
-                    b.Property<string>("RoleId1")
-                        .HasColumnType("varchar(255)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("RoleId");
-
-                    b.HasIndex("RoleId1");
 
                     b.ToTable("AspNetRoleClaims");
                 });
@@ -255,14 +252,9 @@ namespace LearningEFCore.Migrations
                         .IsRequired()
                         .HasColumnType("varchar(255)");
 
-                    b.Property<string>("UserId1")
-                        .HasColumnType("varchar(255)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("UserId");
-
-                    b.HasIndex("UserId1");
 
                     b.ToTable("AspNetUserClaims");
                 });
@@ -288,14 +280,9 @@ namespace LearningEFCore.Migrations
                         .IsRequired()
                         .HasColumnType("varchar(255)");
 
-                    b.Property<string>("UserId1")
-                        .HasColumnType("varchar(255)");
-
                     b.HasKey("LoginProvider", "ProviderKey");
 
                     b.HasIndex("UserId");
-
-                    b.HasIndex("UserId1");
 
                     b.ToTable("AspNetUserLogins");
                 });
@@ -314,19 +301,9 @@ namespace LearningEFCore.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<string>("RoleId1")
-                        .HasColumnType("varchar(255)");
-
-                    b.Property<string>("UserId1")
-                        .HasColumnType("varchar(255)");
-
                     b.HasKey("UserId", "RoleId");
 
                     b.HasIndex("RoleId");
-
-                    b.HasIndex("RoleId1");
-
-                    b.HasIndex("UserId1");
 
                     b.ToTable("AspNetUserRoles");
                 });
@@ -348,15 +325,10 @@ namespace LearningEFCore.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<string>("UserId1")
-                        .HasColumnType("varchar(255)");
-
                     b.Property<string>("Value")
                         .HasColumnType("longtext");
 
                     b.HasKey("UserId", "LoginProvider", "Name");
-
-                    b.HasIndex("UserId1");
 
                     b.ToTable("AspNetUserTokens");
                 });
@@ -441,12 +413,6 @@ namespace LearningEFCore.Migrations
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("Common.DbEntities.Identities.ApplicationRole", "Role")
-                        .WithMany("RoleCliams")
-                        .HasForeignKey("RoleId1");
-
-                    b.Navigation("Role");
                 });
 
             modelBuilder.Entity("Common.DbEntities.Identities.ApplicationUserClaim", b =>
@@ -456,12 +422,6 @@ namespace LearningEFCore.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("Common.DbEntities.Identities.ApplicationUser", "User")
-                        .WithMany("UserClaims")
-                        .HasForeignKey("UserId1");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Common.DbEntities.Identities.ApplicationUserLogin", b =>
@@ -471,12 +431,6 @@ namespace LearningEFCore.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("Common.DbEntities.Identities.ApplicationUser", "User")
-                        .WithMany("UserLogins")
-                        .HasForeignKey("UserId1");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Common.DbEntities.Identities.ApplicationUserRole", b =>
@@ -487,23 +441,11 @@ namespace LearningEFCore.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Common.DbEntities.Identities.ApplicationRole", "Role")
-                        .WithMany("UserRoles")
-                        .HasForeignKey("RoleId1");
-
                     b.HasOne("Common.DbEntities.Identities.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("Common.DbEntities.Identities.ApplicationUser", "User")
-                        .WithMany("UserRoles")
-                        .HasForeignKey("UserId1");
-
-                    b.Navigation("Role");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Common.DbEntities.Identities.ApplicationUserToken", b =>
@@ -513,12 +455,6 @@ namespace LearningEFCore.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("Common.DbEntities.Identities.ApplicationUser", "User")
-                        .WithMany("UserTokens")
-                        .HasForeignKey("UserId1");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Common.DbEntities.Identities.RolePermission", b =>
@@ -530,7 +466,7 @@ namespace LearningEFCore.Migrations
                         .IsRequired();
 
                     b.HasOne("Common.DbEntities.Identities.ApplicationRole", "Role")
-                        .WithMany("RolePermissions")
+                        .WithMany()
                         .HasForeignKey("RoleId");
 
                     b.Navigation("Permission");
@@ -552,26 +488,6 @@ namespace LearningEFCore.Migrations
             modelBuilder.Entity("Common.DbEntities.Identities.ApplicationPermission", b =>
                 {
                     b.Navigation("RolePermissions");
-                });
-
-            modelBuilder.Entity("Common.DbEntities.Identities.ApplicationRole", b =>
-                {
-                    b.Navigation("RoleCliams");
-
-                    b.Navigation("RolePermissions");
-
-                    b.Navigation("UserRoles");
-                });
-
-            modelBuilder.Entity("Common.DbEntities.Identities.ApplicationUser", b =>
-                {
-                    b.Navigation("UserClaims");
-
-                    b.Navigation("UserLogins");
-
-                    b.Navigation("UserRoles");
-
-                    b.Navigation("UserTokens");
                 });
 
             modelBuilder.Entity("Common.Models.Entities.Blog", b =>

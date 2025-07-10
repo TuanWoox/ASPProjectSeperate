@@ -1,4 +1,5 @@
-﻿using Common.Interfaces;
+﻿using Common.DbEntities.Identities;
+using Common.Interfaces;
 using Common.Utils.Enums;
 using Microsoft.AspNetCore.Identity;
 using System;
@@ -11,8 +12,8 @@ namespace Business.Business
 {
     public class UserBusiness: IUserBusiness
     {
-        UserManager<IdentityUser> _userManager;
-        public UserBusiness(UserManager<IdentityUser> userManager)
+        UserManager<ApplicationUser> _userManager;
+        public UserBusiness(UserManager<ApplicationUser> userManager)
         {
             _userManager = userManager;
         }
@@ -25,10 +26,13 @@ namespace Business.Business
             {
                 string username = $"User1Nom{i}";
 
-                var user = new IdentityUser
+                var user = new ApplicationUser
                 {
                     UserName = username,
-                    Email = username + "@gmail.com"
+                    Email = username + "@gmail.com",
+                    FullName = username + "Full Name",
+                    IsActive = true,
+                    PictureURL = "https://example.com/default-profile-picture.png"
                 };
                 var isUserCreated = await _userManager.FindByNameAsync(user.UserName);
                 if (isUserCreated == null)

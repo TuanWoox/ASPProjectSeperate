@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Business.Business;
 using Common.Interfaces;
-using Common.Config;
+using Data;
 using Common.Models.Entities;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -18,6 +18,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using Common.DbEntities.Identities;
 
 namespace LearningEFCore
 {
@@ -34,15 +35,20 @@ namespace LearningEFCore
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<DatabaseContext>(
-            dbContextOptions => dbContextOptions
-                .UseMySql(Configuration.GetConnectionString("DefaultConnection"), ServerVersion.AutoDetect(Configuration.GetConnectionString("DefaultConnection")))
-                // The following three options help with debugging, but should
-                // be changed or removed for production.
-                .LogTo(Console.WriteLine, LogLevel.Information)
-                .EnableSensitiveDataLogging()
-                .EnableDetailedErrors()
+                dbContextOptions => dbContextOptions
+                    .UseMySql(
+                        Configuration.GetConnectionString("DefaultConnection"),
+                        ServerVersion.AutoDetect(Configuration.GetConnectionString("DefaultConnection")),
+                        mysqlOptions =>
+                        {
+                            mysqlOptions.MigrationsAssembly("LearningEFCore");
+                        })
+                    .LogTo(Console.WriteLine, LogLevel.Information)
+                    .EnableSensitiveDataLogging()
+                    .EnableDetailedErrors()
             );
-            services.AddIdentity<IdentityUser, IdentityRole>()
+
+            services.AddIdentity<ApplicationUser, ApplicationRole>()
                 .AddEntityFrameworkStores<DatabaseContext>()
                 .AddDefaultTokenProviders();
 
@@ -55,9 +61,6 @@ namespace LearningEFCore
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "LearningEFCore", Version = "v1" });
             });
         }
-
-
-  
 
         public void LearningEntityFrameWorkdCore(DatabaseContext dbContext)
         {
@@ -91,6 +94,7 @@ namespace LearningEFCore
             {
                 endpoints.MapControllers();
             });
+
             SeedRole(app.ApplicationServices);
             SeedUser(app.ApplicationServices);
         }
